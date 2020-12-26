@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 
+# rest framework imports
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
@@ -16,6 +17,7 @@ from rest_framework.status import (
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 
+# local imports
 from .serializers import QuestionSerializer, ResultSerializer, QuestionWithOptionSerializer
 from .models import Question, Result
 
@@ -86,8 +88,8 @@ def start_exam_api(request):
     """
     # get all questions
     ques = Question.objects.all()
-    ser = QuestionWithOptionSerializer(ques, many=True)
-    data = {'questions': ser.data}
+    serializer = QuestionWithOptionSerializer(ques, many=True)
+    data = {'questions': serializer.data}
     return Response(data, status=HTTP_200_OK)
 
 
@@ -158,6 +160,7 @@ def upload_question_api(request):
     Uploads CSV file having 3 columns- sr/no, questions, questions type
     """
     csv_file = request.FILES['questions']
+    # check whether file is csv or not
     if not csv_file.name.endswith('.csv'):
         return Response({"error": "please upload valid csv file"}, status=HTTP_400_BAD_REQUEST)
 
@@ -188,6 +191,7 @@ def questions_api(request, que_id=None):
         data = {'questions': ser.data}
         return Response(data, status=HTTP_200_OK)
 
+    # get one question object by id
     try:
         question = Question.objects.get(pk=que_id)
     except Question.DoesNotExist:
