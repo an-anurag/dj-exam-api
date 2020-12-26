@@ -24,6 +24,9 @@ from .models import Question, Result
 @api_view(["GET"])
 @permission_classes((AllowAny,))
 def index(request):
+    """
+    Index API
+    """
     return Response({"message": "Welcome to assessment API service"})
 
 
@@ -36,6 +39,9 @@ def index(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def signup_api(request):
+    """
+    Register new user to the exam portal
+    """
     username = request.data.get("username", None)
     password = request.data.get("password", None)
 
@@ -55,6 +61,9 @@ def signup_api(request):
 @api_view(["POST"])
 @permission_classes((AllowAny,))
 def login_api(request):
+    """
+    Login the user to exam portal
+    """
     username = request.data.get("username")
     password = request.data.get("password")
 
@@ -72,6 +81,9 @@ def login_api(request):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def start_exam_api(request):
+    """
+    Start the new exam giving list of all question papers
+    """
     # get all questions
     ques = Question.objects.all()
     ser = QuestionWithOptionSerializer(ques, many=True)
@@ -84,6 +96,7 @@ def start_exam_api(request):
 @permission_classes((IsAuthenticated,))
 def store_result_api(request):
     """
+    Create score card based on options selected by users for each questions
     strongly_agree = 2
     agree = 1
     neutral = 0
@@ -106,13 +119,13 @@ def store_result_api(request):
         if ans == 'strongly_disagree':
             score += -2
 
-    score_card = {}
+    score_card = {'user': request.user.username, 'score': score, 'top_qualities': []}
+
     if Result.objects.filter(user=request.user).exists():
         result = Result.objects.get(user=request.user)
         result.score = score
         result.save()
-        score_card['user'] = request.user.username
-        score_card['score'] = score
+
         return Response(
             {
                 "success": "Exam submitted successfully",
@@ -141,6 +154,9 @@ def store_result_api(request):
 @api_view(["POST"])
 @permission_classes((IsAdminUser,))
 def upload_question_api(request):
+    """
+    Uploads CSV file having 3 columns- sr/no, questions, questions type
+    """
     csv_file = request.FILES['questions']
     if not csv_file.name.endswith('.csv'):
         return Response({"error": "please upload valid csv file"}, status=HTTP_400_BAD_REQUEST)
@@ -162,7 +178,9 @@ def upload_question_api(request):
 @api_view(["GET", "PUT", "DELETE"])
 @permission_classes((IsAdminUser,))
 def questions_api(request, que_id=None):
-
+    """
+    Let admin view all questions
+    """
     # get all questions
     if request.method == 'GET':
         ques = Question.objects.all()
@@ -194,7 +212,9 @@ def questions_api(request, que_id=None):
 @api_view(["GET"])
 @permission_classes((IsAdminUser,))
 def result_api(request):
-
+    """
+    Let admin view all users result
+    """
     try:
         results = Result.objects.all()
     except Result.DoesNotExist:
