@@ -122,6 +122,17 @@ def store_result_api(request):
                 marks[que_type] += -1
             if ans == 'strongly_disagree':
                 marks[que_type] += -2
+        else:
+            if ans == 'strongly_agree':
+                marks[que_type] += 2
+            if ans == 'agree':
+                marks[que_type] += 1
+            if ans == 'neutral':
+                marks[que_type] += 0
+            if ans == 'disagree':
+                marks[que_type] += -1
+            if ans == 'strongly_disagree':
+                marks[que_type] += -2
 
     total = sum([x[1] for x in marks.items()])
     score_card = {'user': request.user.username, 'marks': marks, 'total': total, 'top_qualities': []}
