@@ -8,23 +8,22 @@
 - Test the API as follows
 
 - Sign up the user with `signup` API first and get the token
-`
-    - User API
-    ----------
-    http://127.0.0.1:8000/signup/
-    http://127.0.0.1:8000/login/
-    http://127.0.0.1:8000/exam/start/
-    http://127.0.0.1:8000/exam/submit/
+
+- User API
+----------
+1. http://127.0.0.1:8000/signup/
+2. http://127.0.0.1:8000/login/
+3. http://127.0.0.1:8000/exam/start/
+4. http://127.0.0.1:8000/exam/submit/
     
-    - Admin API
-    ------------
-    http://127.0.0.1:8000/question/upload/
-    http://127.0.0.1:8000/question/list/
-    http://127.0.0.1:8000/question/update/<int:que_id>/
-    http://127.0.0.1:8000/question/delete/<int:que_id>/,
-    http://127.0.0.1:8000/result/list/
-    
-`
+- Admin API
+------------
+1. http://127.0.0.1:8000/question/upload/
+2. http://127.0.0.1:8000/question/list/
+3. http://127.0.0.1:8000/question/update/<int:que_id>/
+4. http://127.0.0.1:8000/question/delete/<int:que_id>/,
+5. http://127.0.0.1:8000/result/list/
+
 
 For POST APIs use the below body template
 
