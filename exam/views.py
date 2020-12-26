@@ -130,24 +130,13 @@ def store_result_api(request):
         result = Result.objects.get(user=request.user)
         result.score = total
         result.save()
-
-        return Response(
-            {
-                "success": "Exam submitted successfully",
-                "score_card": score_card
-            },
-            status=HTTP_200_OK
-        )
+        response = {"success": "Exam submitted successfully", "score_card": score_card}
+        return Response(response, status=HTTP_200_OK)
     else:
         result = Result.objects.create(score=total, user=request.user)
         result.save()
-        return Response(
-            {
-                "success": "Exam submitted successfully",
-                "score_card": score_card
-            },
-            status=HTTP_200_OK
-        )
+        response = {"success": "Exam submitted successfully", "score_card": score_card},
+        return Response(response, status=HTTP_200_OK)
 
 
 #######################################
