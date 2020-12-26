@@ -106,26 +106,29 @@ def store_result_api(request):
     strongly_disagree = -2
     """
     answer_sheet = request.data
-    score = 0
-
+    marks = {}
     for item in answer_sheet:
+        que_type = item['que_type']
         ans = item['selected_option']
-        if ans == 'strongly_agree':
-            score += 2
-        if ans == 'agree':
-            score += 1
-        if ans == 'neutral':
-            score += 0
-        if ans == 'disagree':
-            score += -1
-        if ans == 'strongly_disagree':
-            score += -2
+        if que_type not in marks.keys():
+            marks[que_type] = 0
+            if ans == 'strongly_agree':
+                marks[que_type] += 2
+            if ans == 'agree':
+                marks[que_type] += 1
+            if ans == 'neutral':
+                marks[que_type] += 0
+            if ans == 'disagree':
+                marks[que_type] += -1
+            if ans == 'strongly_disagree':
+                marks[que_type] += -2
 
-    score_card = {'user': request.user.username, 'score': score, 'top_qualities': []}
+    total = sum([x[1] for x in marks.items()])
+    score_card = {'user': request.user.username, 'marks': marks, 'total': total, 'top_qualities': []}
 
     if Result.objects.filter(user=request.user).exists():
         result = Result.objects.get(user=request.user)
-        result.score = score
+        result.score = total
         result.save()
 
         return Response(
@@ -136,7 +139,7 @@ def store_result_api(request):
             status=HTTP_200_OK
         )
     else:
-        result = Result.objects.create(score=score, user=request.user)
+        result = Result.objects.create(score=total, user=request.user)
         result.save()
         return Response(
             {
